@@ -108,7 +108,7 @@ function onClick(event) {
             for (let i = 0; i < Products.allImages.length; i++) {
                 productesResultes = document.createElement('li')
                 list.appendChild(productesResultes)
-                productesResultes.textContent = Products.allImages[i].name + ' has ' + Products.allImages[i].votes + 'votes, and was shown  ' + Products.allImages[i].timeShown + ' times'
+                productesResultes.textContent = Products.allImages[i].name + ' has ' + Products.allImages[i].votes + ' votes, and was shown  ' + Products.allImages[i].timeShown + ' times'
             }
         }
         firstImageElement.removeEventListener('click', onClick);
