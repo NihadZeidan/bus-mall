@@ -5,9 +5,9 @@ let firstImageElement = document.getElementById('firstImage')
 let secondImageElement = document.getElementById('secondImage')
 let thirdImageElement = document.getElementById('thirdImage')
 
-let firstImageIndex;
-let secondImageIndex;
-let thirdImageIndex;
+let firstImageIndex ;
+let secondImageIndex ;
+let thirdImageIndex ;
 
 let maxAttempts = 25;
 let counter = 0;
@@ -53,7 +53,6 @@ console.log(Products.allImages);
 function generateRandom() {
     return Math.floor(Math.random() * Products.allImages.length);
 }
-
 generateRandom();
 console.log(Math.floor(Math.random() * Products.allImages.length));
 
@@ -78,6 +77,7 @@ function renderThreeProducts() {
 
 
 renderThreeProducts();
+
 
 
 firstImageElement.addEventListener('click', onClick);
