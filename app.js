@@ -5,6 +5,8 @@ let firstImageElement = document.getElementById('firstImage')
 let secondImageElement = document.getElementById('secondImage')
 let thirdImageElement = document.getElementById('thirdImage')
 
+let container = document.getElementById('images-container')
+
 let firstImageIndex ;
 let secondImageIndex ;
 let thirdImageIndex ;
@@ -59,12 +61,13 @@ console.log(Math.floor(Math.random() * Products.allImages.length));
 
 function renderThreeProducts() {
     firstImageIndex = generateRandom();
-
-    do {
-        secondImageIndex = generateRandom();
-        thirdImageIndex = generateRandom();
-
-    } while (firstImageIndex === secondImageIndex || firstImageIndex === thirdImageIndex)
+    secondImageIndex = generateRandom();
+    thirdImageIndex = generateRandom();
+        
+while (firstImageIndex === secondImageIndex || firstImageIndex === thirdImageIndex || secondImageIndex === thirdImageIndex) {
+    firstImageIndex = generateRandom();
+    secondImageIndex= generateRandom();
+}
 
     firstImageElement.src = Products.allImages[firstImageIndex].source;
     secondImageElement.src = Products.allImages[secondImageIndex].source;
@@ -80,9 +83,7 @@ renderThreeProducts();
 
 
 
-firstImageElement.addEventListener('click', onClick);
-secondImageElement.addEventListener('click', onClick);
-thirdImageElement.addEventListener('click', onClick);
+container.addEventListener('click', onClick)
 
 function onClick(event) {
 
