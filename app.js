@@ -119,18 +119,3 @@ function onClick(event) {
 }
 
 
-
-function toSetItems(){
-    let toBeString = JSON.stringify(Products.allImages)
-localStorage.setItem('Products', toBeString)
-}
-
-function toGetItems(){
-  let stringItem=  localStorage.getItem('Products')
-
-  let turnBackIntoObject = JSON.parse(stringItem)
-
-  if (turnBackIntoObject !== null){
-      Products.allImages =turnBackIntoObject;
-  }
-}
