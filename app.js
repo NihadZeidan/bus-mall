@@ -115,7 +115,7 @@ function onClick(event) {
 
     // console.log(event.target.id);
 
-    if (counter <= maxAttempts) {
+    if (counter < maxAttempts) {
 
         if (event.target.id === 'firstImage') {
             Products.allImages[firstImageIndex].votes++;
@@ -144,17 +144,18 @@ function onClick(event) {
             }
         }
 
-        charts();
         firstImageElement.removeEventListener('click', onClick);
         secondImageElement.removeEventListener('click', onClick);
         thirdImageElement.removeEventListener('click', onClick);
 
+        
         for (let i = 0; i < Products.allImages.length; i++) {
             totalVotes.push(Products.allImages[i].votes);
             totalShown.push(Products.allImages[i].timeShown);
-
+            
         }
-
+        
+        charts();
     }
 }
 
