@@ -1,6 +1,5 @@
 'use-strict';
 
-let container = document.getElementById('images-container')
 
 let firstImageElement = document.getElementById('firstImage')
 let secondImageElement = document.getElementById('secondImage')
@@ -20,7 +19,7 @@ let counter = 0;
 let totalVotes = [];
 let totalShown = [];
 
-let timeShownPrev = [];
+let PreviousImages = [];
 
 
 function Products(name, source, timeShown) {
@@ -33,10 +32,10 @@ function Products(name, source, timeShown) {
 
 }
 
-
+// To add all instances to the array
 Products.allImages = [];
 
-
+// To create instances
 new Products('bag', '/images/bag.jpg')
 new Products('banana', '/images/banana.jpg')
 new Products('bathroom', '/images/bathroom.jpg')
@@ -60,15 +59,18 @@ new Products('wine-glass', '/images/wine-glass.jpg')
 
 console.log(Products.allImages);
 
+
+// To generate random number for images index
 function generateRandom() {
     return Math.floor(Math.random() * Products.allImages.length);
 }
 generateRandom();
-console.log(Math.floor(Math.random() * Products.allImages.length));
 
 
 
+// To render the three images
 function renderThreeProducts() {
+    // To make sure that images not repeated each round and not repeated with the previous one
     do {
         do {
             firstImageIndex = generateRandom();
@@ -76,47 +78,46 @@ function renderThreeProducts() {
             thirdImageIndex = generateRandom();
         } while (firstImageIndex == secondImageIndex || firstImageIndex == thirdImageIndex || secondImageIndex == thirdImageIndex)
 
-    } while (timeShownPrev.includes(firstImageIndex) || timeShownPrev.includes(secondImageIndex) || timeShownPrev.includes(thirdImageIndex))
+    } while (PreviousImages.includes(firstImageIndex) || PreviousImages.includes(secondImageIndex) || PreviousImages.includes(thirdImageIndex))
 
 
 
 
-
+    // To add Sources to each image source in HTML
     firstImageElement.src = Products.allImages[firstImageIndex].source;
     secondImageElement.src = Products.allImages[secondImageIndex].source;
     thirdImageElement.src = Products.allImages[thirdImageIndex].source;
 
+    // To increment each time the image shown
     Products.allImages[firstImageIndex].timeShown++
     Products.allImages[secondImageIndex].timeShown++
     Products.allImages[thirdImageIndex].timeShown++
 
+    // To clear the previouse images from the array
+    PreviousImages = [];
+    // To push the current images into array
+    PreviousImages.push(firstImageIndex)
+    PreviousImages.push(secondImageIndex)
+    PreviousImages.push(thirdImageIndex)
 
-    timeShownPrev = [];
-
-    timeShownPrev.push(firstImageIndex)
-    timeShownPrev.push(secondImageIndex)
-    timeShownPrev.push(thirdImageIndex)
-
-    console.log(timeShownPrev);
+    console.log(PreviousImages);
 }
-
-
 
 
 renderThreeProducts();
 
 
-
+// To add event when click on each image
+let container = document.getElementById('images-container')
 container.addEventListener('click', onClick)
 
 function onClick(event) {
-
+    //To increment counting each time we click 
     counter++;
 
-    // console.log(event.target.id);
-
+    // To not exceed the max attempts
     if (counter < maxAttempts) {
-
+        // To increment votes for each image you click on
         if (event.target.id === 'firstImage') {
             Products.allImages[firstImageIndex].votes++;
         } else if (event.target.id === 'secondImage') {
@@ -125,41 +126,34 @@ function onClick(event) {
             Products.allImages[thirdImageIndex].votes++
         }
 
+        // To render images again after each click and to storage data in the Local Storage
+        toSetItems();
         renderThreeProducts();
 
-
+        // When exceeding the max attempts 
     } else {
         // let button = document.getElementById('toShowResults');
-        // button.addEventListener('click', charts)
-        // you can use the below function to show a list instead of chart when clicking the button.
 
-        function createResultesList(event) {
-            let list = document.getElementById('resultes')
-            let productesResultes;
-            for (let i = 0; i < Products.allImages.length; i++) {
-                productesResultes = document.createElement('li')
-                list.appendChild(productesResultes)
-                productesResultes.textContent = Products.allImages[i].name + ' has ' + Products.allImages[i].votes + ' votes, and was shown  ' + Products.allImages[i].timeShown + ' times'
-
-            }
-        }
-
+        //  To remove Events after done all the attempts
         firstImageElement.removeEventListener('click', onClick);
         secondImageElement.removeEventListener('click', onClick);
         thirdImageElement.removeEventListener('click', onClick);
-
         
+        
+        // To push all the votes into an array
         for (let i = 0; i < Products.allImages.length; i++) {
             totalVotes.push(Products.allImages[i].votes);
             totalShown.push(Products.allImages[i].timeShown);
             
         }
-        
+        // To render the chart after all attempts
         charts();
     }
 }
 
 
+
+// To create a chart
 function charts() {
 
     var ctx = document.getElementById('canvas').getContext('2d');
@@ -172,18 +166,20 @@ function charts() {
             labels:
                 productsName,
 
+            color: "burlywood",
+
 
             datasets: [{
                 label: 'Votes',
-                backgroundColor: 'red',
+                backgroundColor: "burlywood",
                 borderColor: 'black',
                 data: totalVotes
             },
 
             {
                 label: 'Times Shown',
-                backgroundColor: 'black',
-                borderColor: 'red',
+                backgroundColor: 'rgb(100, 74, 41)',
+                borderColor: 'black',
                 data: totalShown
             }]
 
@@ -191,6 +187,54 @@ function charts() {
 
         // Configuration options go here
         options: {}
+
     });
 
 }
+
+
+// To save items in the local storage after stringifing them
+function toSetItems() {
+
+    let toBeString = JSON.stringify(Products.allImages)
+    localStorage.setItem('ProductsVotes', toBeString)
+
+}
+
+
+// To get the data from local storage  
+function toGetItem() {
+
+
+    let getStringObject = localStorage.getItem('ProductsVotes')
+    // To change strings to object again
+    let backToObject = JSON.parse(getStringObject)
+
+    let allStoredVotes = [];
+    let allStoredShown = [];
+
+    // To make sure not to change if there are no data
+    if (backToObject !== null) {
+        Products.allImages = backToObject
+    }
+
+    // To push each votes and time shown from the last attempts to an array
+    for (let i = 0; i < Products.allImages.length; i++) {
+        allStoredVotes.push(backToObject[i].votes);
+        allStoredShown.push(backToObject[i].timeShown);
+    }
+    
+    // To update the total and time shown array with the new data from last attempts
+    for (let y = 0; y < Products.allImages.length; y++) {
+        totalVotes.push(allStoredVotes[y]);
+        totalShown.push(allStoredShown[y]);
+    }
+    
+    // To render the chart again after updating
+    charts();
+    
+    console.log(allStoredVotes);
+}
+toGetItem();
+
+      
