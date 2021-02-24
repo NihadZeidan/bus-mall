@@ -99,7 +99,7 @@ function renderThreeProducts() {
     PreviousImages.push(firstImageIndex)
     PreviousImages.push(secondImageIndex)
     PreviousImages.push(thirdImageIndex)
-
+    
     console.log(PreviousImages);
 }
 
@@ -114,7 +114,7 @@ container.addEventListener('click', onClick)
 function onClick(event) {
     //To increment counting each time we click 
     counter++;
-
+    
     // To not exceed the max attempts
     if (counter < maxAttempts) {
         // To increment votes for each image you click on
@@ -125,99 +125,100 @@ function onClick(event) {
         } else {
             Products.allImages[thirdImageIndex].votes++
         }
-
+        
         // To render images again after each click and to storage data in the Local Storage
-        toSetItems();
         renderThreeProducts();
-
+        
         // When exceeding the max attempts 
     } else {
         // let button = document.getElementById('toShowResults');
-
+        
         //  To remove Events after done all the attempts
-        firstImageElement.removeEventListener('click', onClick);
-        secondImageElement.removeEventListener('click', onClick);
-        thirdImageElement.removeEventListener('click', onClick);
+        container.removeEventListener('click', onClick);
+    
         
         
         // To push all the votes into an array
         for (let i = 0; i < Products.allImages.length; i++) {
             totalVotes.push(Products.allImages[i].votes);
             totalShown.push(Products.allImages[i].timeShown);
-            
         }
+        // charts();
         // To render the chart after all attempts
-        charts();
+        
+        toSetItems();
+        charts();   
     }
 }
 
 
 
+
 // To create a chart
 function charts() {
-
+    
     var ctx = document.getElementById('canvas').getContext('2d');
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'bar',
-
+        
         // The data for our dataset
         data: {
             labels:
-                productsName,
-
+            productsName,
+            
             color: "burlywood",
-
-
+            
+            
             datasets: [{
                 label: 'Votes',
                 backgroundColor: "burlywood",
                 borderColor: 'black',
                 data: totalVotes
             },
-
+            
             {
                 label: 'Times Shown',
                 backgroundColor: 'rgb(100, 74, 41)',
                 borderColor: 'black',
                 data: totalShown
             }]
-
+            
         },
-
+        
         // Configuration options go here
         options: {}
-
+        
     });
-
+    
 }
 
 
 // To save items in the local storage after stringifing them
 function toSetItems() {
-
+    
     let toBeString = JSON.stringify(Products.allImages)
     localStorage.setItem('ProductsVotes', toBeString)
-
+    
 }
 
 
 // To get the data from local storage  
 function toGetItem() {
-
-
+    
+    
     let getStringObject = localStorage.getItem('ProductsVotes')
     // To change strings to object again
     let backToObject = JSON.parse(getStringObject)
-
+    
     let allStoredVotes = [];
     let allStoredShown = [];
-
+    
     // To make sure not to change if there are no data
     if (backToObject !== null) {
         Products.allImages = backToObject
     }
-
+    
     // To push each votes and time shown from the last attempts to an array
     for (let i = 0; i < Products.allImages.length; i++) {
         allStoredVotes.push(backToObject[i].votes);
@@ -232,9 +233,7 @@ function toGetItem() {
     
     // To render the chart again after updating
     charts();
-    
     console.log(allStoredVotes);
 }
-toGetItem();
 
-      
+toGetItem();
